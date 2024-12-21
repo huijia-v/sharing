@@ -1,0 +1,70 @@
+# result config
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm
+    time-zone: GMT+8
+  web:
+    resources:
+      chain:
+        compressed: true
+  ## flyway config
+  flyway:
+    clean-disabled: true
+    enabled: false
+  main:
+    allow-circular-references: true
+  servlet:
+    multipart:
+      max-request-size: -1
+      max-file-size: -1
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+## mybatis config
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  mapper-locations:
+    - classpath*:mapper/*.xml
+    - classpath*:com/gitee/sunchenbin/mybatis/actable/mapping/*/*.xml
+
+# knife4j config
+knife4j:
+  enable: true
+  setting:
+    enableSwaggerModels: true
+
+
+sa-token:
+  is-print: false
+  token-name: sharing-token
+
+server:
+  compression:
+    enabled: true
+
+sharing:
+  log:
+    encoder: UTF-8
+# onedrive config
+  onedrive:
+    clientId: 0xxxxxxxxxxxxxxx
+    clientSecret: xxxxxxxxxxxxxxx
+    redirectUri: xxxxxxxxxxxxxxx
+    scope: xxxxxxxxxxxxxxx
+
+  # onedrive china config
+  onedrive-china:
+    clientId: xxxxxxxxxxxxxxx
+    clientSecret: xxxxxxxxxxxxxxx
+    redirectUri: xxxxxxxxxxxxxxx
+    scope: xxxxxxxxxxxxxxx
+
+  # gd config
+  gd:
+    clientId: xxxxx
+    clientSecret: xxxxxxxxxxxxxxx
+    redirectUri: xxxxxxxxxxxx
+    scope: xxxxxxxxxxxxxxxxxx
