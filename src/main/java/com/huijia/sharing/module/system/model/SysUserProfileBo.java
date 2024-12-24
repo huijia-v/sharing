@@ -1,6 +1,7 @@
 package com.huijia.sharing.module.system.model;
 
 import com.huijia.sharing.core.xss.Xss;
+import com.huijia.sharing.module.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class SysUserProfileBo  extends BaseEntity{
+public class SysUserProfileBo  extends BaseEntity {
 
     /**
      * 用户ID

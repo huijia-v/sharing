@@ -34,6 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 个人中心
@@ -62,7 +64,7 @@ public class SysUserProfileController {
      */
     @ApiOperation(value = "获取profile信息")
     @GetMapping
-    public AjaxJson<?> getInfo() {
+    public AjaxJson<?> getProfile() {
         ProfileVo profileVo = new ProfileVo();
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (ObjectUtil.isNull(loginUser)) {
@@ -72,6 +74,23 @@ public class SysUserProfileController {
         profileVo.setUser(user);
         profileVo.setRoleGroup(userService.selectUserRoleGroup(user.getUserName()));
         return AjaxJson.getSuccessData(profileVo);
+    }
+
+
+    /**
+     * 获取用户信息
+     *
+     * @return 用户信息
+     */
+    @GetMapping("getInfo")
+    public AjaxJson<Map<String, Object>> getInfo() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        SysUserVo user = userService.selectUserById(loginUser.getUserId());
+        Map<String, Object> ajax = new HashMap<>();
+        ajax.put("user", user);
+        ajax.put("roles", loginUser.getRolePermission());
+        ajax.put("permissions", loginUser.getMenuPermission());
+        return AjaxJson.getSuccessData(ajax);
     }
 
     /**

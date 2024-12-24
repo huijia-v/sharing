@@ -2,6 +2,7 @@ package com.huijia.sharing.module.system.model;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.huijia.sharing.module.domain.BaseEntity;
 import com.huijia.sharing.module.system.constant.UserConstants;
 import com.huijia.sharing.module.system.handler.CustomLongSerializer;
 import lombok.Data;
@@ -16,10 +17,11 @@ import java.util.Date;
  * @author Lion Li
  */
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @TableName("sys_user")
-public class SysUser {
+public class SysUser extends BaseEntity {
 
     /**
      * 用户ID

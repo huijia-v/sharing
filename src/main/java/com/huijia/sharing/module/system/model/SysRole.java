@@ -4,9 +4,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.huijia.sharing.module.domain.BaseEntity;
 import com.huijia.sharing.module.system.handler.CustomLongSerializer;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 
 
 /**
@@ -15,10 +18,11 @@ import lombok.NoArgsConstructor;
  * @author Lion Li
  */
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @TableName("sys_role")
-public class SysRole {
+public class SysRole extends BaseEntity {
 
     /**
      * 角色ID

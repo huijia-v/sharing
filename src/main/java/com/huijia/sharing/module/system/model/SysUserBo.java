@@ -1,6 +1,7 @@
 package com.huijia.sharing.module.system.model;
 
 import com.huijia.sharing.core.xss.Xss;
+import com.huijia.sharing.module.domain.BaseEntity;
 import com.huijia.sharing.module.system.constant.UserConstants;
 import com.huijia.sharing.module.system.validate.AddGroup;
 import com.huijia.sharing.module.system.validate.EditGroup;

@@ -1,7 +1,7 @@
 package com.huijia.sharing.module.system.model;
 
+import com.huijia.sharing.module.domain.BaseEntity;
 import com.huijia.sharing.module.system.constant.UserConstants;
-import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
