@@ -42,6 +42,7 @@ public class SysUserController {
      * 获取用户列表
      */
     @ApiOperation(value = "获取用户列表")
+    @SaCheckPermission("system:user:list")
     @GetMapping("/list")
     public AjaxJson<TableDataInfo<SysUserVo>> list(SysUserBo user, PageQuery pageQuery) {
         return AjaxJson.getSuccessData(userService.selectPageUserList(user, pageQuery));
@@ -54,6 +55,7 @@ public class SysUserController {
      * @return 用户信息
      */
     @ApiOperation(value = "获取用户信息")
+    @SaCheckPermission("system:user:getInfo")
     @GetMapping("/getInfo")
     public AjaxJson<?> getInfo() {
         UserInfoVo userInfoVo = new UserInfoVo();
@@ -72,6 +74,7 @@ public class SysUserController {
      *
      * @param userId 用户ID
      */
+    @SaCheckPermission("system:user:query")
     @ApiOperation(value = "根据用户编号获取详细信息")
     @GetMapping(value = {"/", "/{userId}"})
     public AjaxJson<SysUserInfoVo> getInfo(@PathVariable(value = "userId", required = false) Long userId) {
@@ -92,6 +95,7 @@ public class SysUserController {
     /**
      * 新增用户
      */
+    @SaCheckPermission("system:user:add")
     @ApiOperation(value = "新增用户")
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
@@ -110,6 +114,7 @@ public class SysUserController {
     /**
      * 修改用户
      */
+    @SaCheckPermission("system:user:edit")
     @ApiOperation(value = "修改用户")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -131,6 +136,7 @@ public class SysUserController {
      *
      * @param userIds 角色ID串
      */
+    @SaCheckPermission("system:user:remove")
     @ApiOperation(value = "删除用户")
     @Log(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
@@ -144,6 +150,7 @@ public class SysUserController {
     /**
      * 重置密码
      */
+    @SaCheckPermission("system:user:resetPwd")
     @ApiOperation(value = "重置密码")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd")
@@ -157,6 +164,7 @@ public class SysUserController {
     /**
      * 状态修改
      */
+    @SaCheckPermission("system:user:edit")
     @ApiOperation(value = "状态修改")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
@@ -171,6 +179,7 @@ public class SysUserController {
      *
      * @param userId 用户ID
      */
+    @SaCheckPermission("system:user:query")
     @ApiOperation(value = "根据用户编号获取详细信息")
     @GetMapping("/authRole/{userId}")
     public AjaxJson<?> authRole(@PathVariable Long userId) {
@@ -188,6 +197,7 @@ public class SysUserController {
      * @param userId  用户Id
      * @param roleIds 角色ID串
      */
+    @SaCheckPermission("system:user:edit")
     @ApiOperation(value = "用户授权角色")
     @Log(title = "用户管理", businessType = BusinessType.GRANT)
     @PutMapping("/authRole")

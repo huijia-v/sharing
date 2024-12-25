@@ -1,7 +1,10 @@
 package com.huijia.sharing.module.system.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.huijia.sharing.module.system.handler.CustomLongSerializer;
+import com.huijia.sharing.module.system.handler.LongToStringSerializer;
 import lombok.Data;
 
 import java.util.List;
@@ -22,7 +25,7 @@ public class SysUserInfoVo {
     /**
      * 角色ID列表
      */
-//    @JsonSerialize(using = CustomLongSerializer.class)
+    @JsonSerialize(contentUsing = LongToStringSerializer.class)
     private List<Long> roleIds;
 
     /**

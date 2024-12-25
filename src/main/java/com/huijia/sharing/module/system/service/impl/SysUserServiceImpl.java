@@ -208,14 +208,13 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public void checkUserDataScope(Long userId) {
-        if (ObjectUtil.isNull(userId)) {
-            return;
-        }
-        if (LoginHelper.isSuperAdmin()) {
-            return;
-        }
-        if (ObjectUtil.isNull(baseMapper.selectUserById(userId))) {
-            throw new ServiceException("没有权限访问用户数据！", CodeMsg.ERROR);
+        if (!LoginHelper.isSuperAdmin()) {
+            SysUserBo user = new SysUserBo();
+            user.setUserId(userId);
+            List<SysUserVo> users = this.selectUserList(user);
+            if (CollUtil.isEmpty(users)) {
+                throw new ServiceException("没有权限访问用户数据！", CodeMsg.ERROR);
+            }
         }
     }
 
@@ -276,7 +275,9 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Override
     public void insertUserAuth(Long userId, Long[] roleIds) {
-
+        userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
+                .eq(SysUserRole::getUserId, userId));
+        insertUserRole(userId, roleIds);
     }
 
     /**
@@ -287,6 +288,25 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     private void insertUserRole(SysUserBo user, boolean clear) {
         this.insertUserRole(user.getUserId(), user.getRoleIds(), clear);
+    }
+
+    /**
+     * 新增用户角色信息
+     *
+     * @param userId  用户ID
+     * @param roleIds 角色组
+     */
+    public void insertUserRole(Long userId, Long[] roleIds) {
+        if (ArrayUtil.isNotEmpty(roleIds)) {
+            // 新增用户与角色管理
+            List<SysUserRole> list = StreamUtils.toList(Arrays.asList(roleIds), roleId -> {
+                SysUserRole ur = new SysUserRole();
+                ur.setUserId(userId);
+                ur.setRoleId(roleId);
+                return ur;
+            });
+            userRoleMapper.insertBatch(list);
+        }
     }
 
     /**
@@ -433,5 +453,18 @@ public class SysUserServiceImpl implements ISysUserService {
             throw new ServiceException("删除用户失败!", CodeMsg.ERROR);
         }
         return flag;
+    }
+
+    @Override
+    public TableDataInfo<SysUserVo> selectUnallocatedList(SysUserBo user, PageQuery pageQuery) {
+        List<Long> userIds = userRoleMapper.selectUserIdsByRoleId(user.getRoleId());
+        QueryWrapper<SysUser> wrapper = Wrappers.query();
+        wrapper.eq("u.del_flag", UserConstants.USER_NORMAL)
+                .and(w -> w.ne("r.role_id", user.getRoleId()).or().isNull("r.role_id"))
+                .notIn(CollUtil.isNotEmpty(userIds), "u.user_id", userIds)
+                .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
+                .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber());
+        Page<SysUserVo> page = baseMapper.selectUnallocatedList(pageQuery.build(), wrapper);
+        return TableDataInfo.build(page);
     }
 }

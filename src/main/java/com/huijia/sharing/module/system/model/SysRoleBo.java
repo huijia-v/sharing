@@ -1,7 +1,15 @@
 package com.huijia.sharing.module.system.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.huijia.sharing.module.domain.BaseEntity;
 import com.huijia.sharing.module.system.constant.UserConstants;
+import com.huijia.sharing.module.system.handler.CustomLongSerializer;
+import com.huijia.sharing.module.system.handler.LongArraySerializer;
+import com.huijia.sharing.module.system.handler.LongToStringSerializer;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -58,6 +66,13 @@ public class SysRoleBo extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    /**
+     * 菜单组
+     */
+    @TableField(exist = false)
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long[] menuIds;
 
 
     public SysRoleBo(Long roleId) {

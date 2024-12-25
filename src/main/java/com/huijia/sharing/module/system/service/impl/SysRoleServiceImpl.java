@@ -16,8 +16,10 @@ import com.huijia.sharing.core.util.CodeMsg;
 import com.huijia.sharing.module.system.constant.UserConstants;
 import com.huijia.sharing.module.system.convert.SysRoleConvert;
 import com.huijia.sharing.module.system.mapper.SysRoleMapper;
+import com.huijia.sharing.module.system.mapper.SysRoleMenuMapper;
 import com.huijia.sharing.module.system.mapper.SysUserRoleMapper;
 import com.huijia.sharing.module.system.model.*;
+import com.huijia.sharing.module.system.model.entity.SysRoleMenu;
 import com.huijia.sharing.module.system.page.PageQuery;
 import com.huijia.sharing.module.system.page.TableDataInfo;
 import com.huijia.sharing.module.system.service.ISysRoleService;
@@ -40,6 +42,7 @@ import java.util.*;
 public class SysRoleServiceImpl implements ISysRoleService {
 
     private final SysRoleMapper baseMapper;
+    private final SysRoleMenuMapper roleMenuMapper;
 
     private final SysUserRoleMapper userRoleMapper;
 
@@ -261,9 +264,33 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateRole(SysRoleBo bo) {
-        SysRole role = SysRoleConvert.INSTANCE.convert(bo);
+        SysRole role = MapstructUtils.convert(bo, SysRole.class);
         // 修改角色信息
-        return baseMapper.updateById(role);
+        baseMapper.updateById(role);
+        // 删除角色与菜单关联
+        roleMenuMapper.delete(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId, role.getRoleId()));
+        return insertRoleMenu(role);
+    }
+
+    /**
+     * 新增角色菜单信息
+     *
+     * @param role 角色对象
+     */
+    public int insertRoleMenu(SysRole role) {
+        int rows = 1;
+        // 新增用户与角色管理
+        List<SysRoleMenu> list = new ArrayList<>();
+        for (Long menuId : role.getMenuIds()) {
+            SysRoleMenu rm = new SysRoleMenu();
+            rm.setRoleId(role.getRoleId());
+            rm.setMenuId(menuId);
+            list.add(rm);
+        }
+        if (list.size() > 0) {
+            rows = roleMenuMapper.insertBatch(list) ? list.size() : 0;
+        }
+        return rows;
     }
 
     /**

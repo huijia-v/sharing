@@ -15,7 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 角色信息
@@ -34,19 +37,29 @@ public class SysRoleController {
     /**
      * 获取角色信息列表
      */
-    @ApiOperation(value = "获取角色信息列表")
+    @SaCheckPermission("system:role:list")
     @GetMapping("/list")
     public AjaxJson<TableDataInfo<SysRoleVo>> list(SysRoleBo role, PageQuery pageQuery) {
         return AjaxJson.getSuccessData(roleService.selectPageRoleList(role, pageQuery));
     }
 
+//    /**
+//     * 导出角色信息列表
+//     */
+//    @Log(title = "角色管理", businessType = BusinessType.EXPORT)
+//    @SaCheckPermission("system:role:export")
+//    @PostMapping("/export")
+//    public void export(SysRole role, HttpServletResponse response) {
+//        List<SysRole> list = roleService.selectRoleList(role);
+//        ExcelUtil.exportExcel(list, "角色数据", SysRole.class, response);
+//    }
 
     /**
      * 根据角色编号获取详细信息
      *
      * @param roleId 角色ID
      */
-    @ApiOperation(value = "根据角色编号获取详细信息")
+    @SaCheckPermission("system:role:query")
     @GetMapping(value = "/{roleId}")
     public AjaxJson<SysRoleVo> getInfo(@PathVariable Long roleId) {
         roleService.checkRoleDataScope(roleId);
@@ -56,7 +69,7 @@ public class SysRoleController {
     /**
      * 新增角色
      */
-    @ApiOperation(value = "新增角色")
+    @SaCheckPermission("system:role:add")
     @Log(title = "角色管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxJson<?> add(@Validated @RequestBody SysRoleBo role) {
@@ -66,14 +79,14 @@ public class SysRoleController {
         } else if (!roleService.checkRoleKeyUnique(role)) {
             return AjaxJson.getError("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
-        return AjaxJson.getSuccess("ok", roleService.insertRole(role));
+        return AjaxJson.getSuccessData(roleService.insertRole(role));
 
     }
 
     /**
      * 修改保存角色
      */
-    @ApiOperation(value = "修改保存角色")
+    @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxJson<?> edit(@Validated @RequestBody SysRoleBo role) {
@@ -95,7 +108,7 @@ public class SysRoleController {
     /**
      * 修改保存数据权限
      */
-    @ApiOperation(value = "修改保存数据权限")
+    @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping("/dataScope")
     public AjaxJson<?> dataScope(@RequestBody SysRoleBo role) {
@@ -107,7 +120,7 @@ public class SysRoleController {
     /**
      * 状态修改
      */
-    @ApiOperation(value = "状态修改")
+    @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public AjaxJson<?> changeStatus(@RequestBody SysRoleBo role) {
@@ -121,7 +134,7 @@ public class SysRoleController {
      *
      * @param roleIds 角色ID串
      */
-    @ApiOperation(value = "删除角色")
+    @SaCheckPermission("system:role:remove")
     @Log(title = "角色管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{roleIds}")
     public AjaxJson<?> remove(@PathVariable Long[] roleIds) {
@@ -131,7 +144,7 @@ public class SysRoleController {
     /**
      * 获取角色选择框列表
      */
-    @ApiOperation(value = "获取角色选择框列表")
+    @SaCheckPermission("system:role:query")
     @GetMapping("/optionselect")
     public AjaxJson<List<SysRoleVo>> optionselect() {
         return AjaxJson.getSuccessData(roleService.selectRoleAll());
@@ -140,17 +153,25 @@ public class SysRoleController {
     /**
      * 查询已分配用户角色列表
      */
-    @ApiOperation(value = "查询已分配用户角色列表")
+    @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/allocatedList")
     public AjaxJson<TableDataInfo<SysUserVo>> allocatedList(SysUserBo user, PageQuery pageQuery) {
         return AjaxJson.getSuccessData(userService.selectAllocatedList(user, pageQuery));
     }
 
+    /**
+     * 查询未分配用户角色列表
+     */
+    @SaCheckPermission("system:role:list")
+    @GetMapping("/authUser/unallocatedList")
+    public AjaxJson<TableDataInfo<SysUserVo>> unallocatedList(SysUserBo user, PageQuery pageQuery) {
+        return AjaxJson.getSuccessData(userService.selectUnallocatedList(user, pageQuery));
+    }
 
     /**
      * 取消授权用户
      */
-    @ApiOperation(value = "取消授权用户")
+    @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/cancel")
     public AjaxJson<?> cancelAuthUser(@RequestBody SysUserRole userRole) {
@@ -163,7 +184,7 @@ public class SysRoleController {
      * @param roleId  角色ID
      * @param userIds 用户ID串
      */
-    @ApiOperation(value = "批量取消授权用户")
+    @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/cancelAll")
     public AjaxJson<?> cancelAuthUserAll(Long roleId, Long[] userIds) {
@@ -176,11 +197,25 @@ public class SysRoleController {
      * @param roleId  角色ID
      * @param userIds 用户ID串
      */
-    @ApiOperation(value = "批量选择用户授权")
+    @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/selectAll")
     public AjaxJson<?> selectAuthUserAll(Long roleId, Long[] userIds) {
         roleService.checkRoleDataScope(roleId);
         return AjaxJson.getSuccessData(roleService.insertAuthUsers(roleId, userIds));
     }
+
+    /**
+     * 获取对应角色部门树列表
+     *
+     * @param roleId 角色ID
+     */
+//    @SaCheckPermission("system:role:list")
+//    @GetMapping(value = "/deptTree/{roleId}")
+//    public AjaxJson<Map<String, Object>> roleDeptTreeselect(@PathVariable("roleId") Long roleId) {
+//        Map<String, Object> ajax = new HashMap<>();
+//        ajax.put("checkedKeys", deptService.selectDeptListByRoleId(roleId));
+//        ajax.put("depts", deptService.selectDeptTreeList(new SysDept()));
+//        return AjaxJson.getSuccessData(ajax);
+//    }
 }

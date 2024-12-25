@@ -3,6 +3,7 @@ package com.huijia.sharing.module.login.service;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.huijia.sharing.core.exception.ServiceException;
@@ -19,6 +20,7 @@ import com.huijia.sharing.module.system.model.SysUser;
 import com.huijia.sharing.module.system.model.SysUserVo;
 import com.huijia.sharing.module.system.service.ISysRoleService;
 import com.huijia.sharing.module.system.service.ISysUserService;
+import com.huijia.sharing.module.system.service.impl.SysPermissionService;
 import com.huijia.sharing.module.system.utils.LoginHelper;
 import com.huijia.sharing.module.system.utils.MapstructUtils;
 import com.huijia.sharing.module.system.utils.ServletUtils;
@@ -58,6 +60,9 @@ public class LoginServiceImpl implements LoginService {
     @Resource
     private SystemConfigService systemConfigService;
 
+    @Resource
+    private SysPermissionService permissionService;
+
     @Override
     public String doLogin(UserLoginRequest userLoginRequest) {
         SystemConfigDTO systemConfig = systemConfigService.getSystemConfig();
@@ -73,13 +78,17 @@ public class LoginServiceImpl implements LoginService {
         } else if (Objects.equals(loginVerifyMode, LoginVerifyModeEnum.IMG_VERIFY_MODE)) {
             imgVerifyCodeService.checkCaptcha(verifyCodeUuid, verifyCode);
         }
+        SysUser sysUser = BeanUtil.copyProperties(sysUserVo, SysUser.class);
         if (!Objects.isNull(sysUserVo) && BCrypt.checkpw(userLoginRequest.getPassword(), sysUserVo.getPassword())) {
             LoginUser loginUser = new LoginUser();
             loginUser.setLoginTime(System.currentTimeMillis());
             loginUser.setUsername(userLoginRequest.getUsername());
             loginUser.setUserId(sysUserVo.getUserId());
             loginUser.setUserType(sysUserVo.getUserType());
+            loginUser.setMenuPermission(permissionService.getMenuPermission(sysUser));
+            loginUser.setRolePermission(permissionService.getRolePermission(sysUser));
             loginUser.setRoles(MapstructUtils.convert(sysUserVo.getRoles(), RoleDTO.class));
+//            loginUser.setRoles(BeanUtil.copyToList(sysUserVo.getRoles(), RoleDTO.class));
             SaLoginModel saLoginModel = new SaLoginModel();
             LoginHelper.login(loginUser, saLoginModel);
             recordLoginInfo(loginUser.getUserId(), loginUser.getUsername());

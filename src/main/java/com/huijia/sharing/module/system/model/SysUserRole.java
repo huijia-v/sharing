@@ -13,10 +13,9 @@ import lombok.EqualsAndHashCode;
  * @author Lion Li
  */
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_user_role")
-public class SysUserRole extends BaseEntity {
+public class SysUserRole {
 
     /**
      * 用户ID

@@ -1,6 +1,7 @@
 package com.huijia.sharing.module.system.service;
 
 
+import com.huijia.sharing.core.util.AjaxJson;
 import com.huijia.sharing.module.system.model.SysUserBo;
 import com.huijia.sharing.module.system.model.SysUserVo;
 import com.huijia.sharing.module.system.page.PageQuery;
@@ -202,6 +203,8 @@ public interface ISysUserService {
      * @return 结果
      */
     int deleteUserByIds(Long[] userIds);
+
+    TableDataInfo<SysUserVo> selectUnallocatedList(SysUserBo user, PageQuery pageQuery);
 
     /**
      * 通过部门id查询当前部门所有用户
