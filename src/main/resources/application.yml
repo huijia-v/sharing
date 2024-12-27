@@ -24,7 +24,7 @@ spring:
 #    resources:
 #      static-locations: file:${app.avatar.upload-dir}/
 sharing:
-  debug: true
+  debug: false
   log:
     path: ${user.home}/.sharing-v4/logs
   db:

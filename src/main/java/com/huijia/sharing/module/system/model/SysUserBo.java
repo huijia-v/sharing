@@ -1,5 +1,7 @@
 package com.huijia.sharing.module.system.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.huijia.sharing.core.xss.Xss;
 import com.huijia.sharing.module.domain.BaseEntity;
 import com.huijia.sharing.module.system.constant.UserConstants;
@@ -85,7 +87,7 @@ public class SysUserBo extends BaseEntity {
     /**
      * 角色组
      */
-    @Size(min = 1, message = "用户角色不能为空", groups = {AddGroup.class, EditGroup.class})
+    @Size(min = 1, message = "用户角色不能为空")
     private Long[] roleIds;
 
 

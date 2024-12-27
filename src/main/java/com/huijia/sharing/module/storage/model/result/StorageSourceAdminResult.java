@@ -74,6 +74,9 @@ public class StorageSourceAdminResult {
 	@ApiModelProperty(value = "是否默认开启图片模式", example = "true")
 	private Boolean defaultSwitchToImgMode;
 
+	@ApiModelProperty(value = "是否可见性", example = "0")
+	private Integer visable;
+
 
 	@ApiModelProperty(value = "存储源刷新信息")
 	private RefreshTokenCacheBO.RefreshTokenInfo refreshTokenInfo;

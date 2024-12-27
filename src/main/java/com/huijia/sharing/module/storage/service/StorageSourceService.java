@@ -201,6 +201,7 @@ public class StorageSourceService {
         
         // 获取数据库对象，转为 dto 对象返回
         StorageSource storageSource = findById(id);
+//        storageSourceAllParam.setVisable(storageSource.getVisable());
         return storageSourceConvert.entityToDTO(storageSource, storageSourceAllParam);
     }
     

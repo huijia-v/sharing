@@ -111,5 +111,8 @@ public class StorageSourceAllParamDTO {
     
     @ApiModelProperty(value = "存储源 ID", example = "0AGrY0xF1D7PEUk9PV2")
     private String driveId;
+
+//    @ApiModelProperty(value = "存储源可见性", example = "0-私有")
+//    private Integer visable;
     
 }

@@ -1,8 +1,7 @@
 package com.huijia.sharing.core.config;
-
+import org.springframework.context.annotation.Bean;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -18,4 +17,11 @@ public class JacksonConfiguration {
             builder.serializerByType(Long.class, ToStringSerializer.instance);
         };
     }
+
+//    @Bean
+//    public ObjectMapper objectMapper() {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.registerModule(new CustomDeserializerModule());
+//        return objectMapper;
+//    }
 }

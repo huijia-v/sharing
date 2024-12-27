@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.huijia.sharing.core.exception.ServiceException;
 import com.huijia.sharing.core.util.CodeMsg;
+import com.huijia.sharing.module.login.request.UserRegisterRequest;
 import com.huijia.sharing.module.system.constant.UserConstants;
 import com.huijia.sharing.module.system.convert.SysUserConvert;
 import com.huijia.sharing.module.system.mapper.SysRoleMapper;
@@ -22,6 +23,7 @@ import com.huijia.sharing.module.system.page.PageQuery;
 import com.huijia.sharing.module.system.page.TableDataInfo;
 import com.huijia.sharing.module.system.service.ISysUserService;
 import com.huijia.sharing.module.system.utils.LoginHelper;
+import com.huijia.sharing.module.system.utils.MapstructUtils;
 import com.huijia.sharing.module.system.utils.StreamUtils;
 import com.huijia.sharing.module.system.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -246,10 +248,12 @@ public class SysUserServiceImpl implements ISysUserService {
      * @return 结果
      */
     @Override
-    public boolean registerUser(SysUserBo user, String tenantId) {
+    public boolean registerUser(UserRegisterRequest user) {
         user.setCreateBy(user.getUserId());
         user.setUpdateBy(user.getUserId());
-        SysUser sysUser = SysUserConvert.INSTANCE.convert(user);
+//        SysUser sysUser = SysUserConvert.INSTANCE.convert(user);
+        SysUser sysUser = MapstructUtils.convert(user, SysUser.class);
+        sysUser.setNickName(user.getUserName());
         return baseMapper.insert(sysUser) > 0;
     }
 

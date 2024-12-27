@@ -2,6 +2,7 @@ package com.huijia.sharing.module.system.service;
 
 
 import com.huijia.sharing.core.util.AjaxJson;
+import com.huijia.sharing.module.login.request.UserRegisterRequest;
 import com.huijia.sharing.module.system.model.SysUserBo;
 import com.huijia.sharing.module.system.model.SysUserVo;
 import com.huijia.sharing.module.system.page.PageQuery;
@@ -135,7 +136,7 @@ public interface ISysUserService {
      * @param user 用户信息
      * @return 结果
      */
-    boolean registerUser(SysUserBo user, String tenantId);
+    boolean registerUser(UserRegisterRequest user);
 
     /**
      * 修改用户信息

@@ -18,6 +18,8 @@ public class SharingConstant {
 
     public static final String TOKEN = "sharing-token";
 
+    public static final Integer ISPUBLIC = 1;
+
     /**
      * 最大支持文本文件大小为 ? KB 的文件内容.
      */

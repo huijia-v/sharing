@@ -9,6 +9,7 @@ import com.huijia.sharing.module.system.annotation.Log;
 import com.huijia.sharing.module.system.constant.UserConstants;
 import com.huijia.sharing.module.system.enums.BusinessType;
 import com.huijia.sharing.module.system.model.*;
+import com.huijia.sharing.module.system.model.request.ChangeRoleRequest;
 import com.huijia.sharing.module.system.page.PageQuery;
 import com.huijia.sharing.module.system.page.TableDataInfo;
 import com.huijia.sharing.module.system.service.ISysRoleService;
@@ -193,17 +194,15 @@ public class SysUserController {
 
     /**
      * 用户授权角色
-     *
-     * @param userId  用户Id
-     * @param roleIds 角色ID串
+     * @param changeRoleRequest 角色信息用户id和角色id集合
      */
     @SaCheckPermission("system:user:edit")
     @ApiOperation(value = "用户授权角色")
     @Log(title = "用户管理", businessType = BusinessType.GRANT)
     @PutMapping("/authRole")
-    public AjaxJson<Void> insertAuthRole(Long userId, Long[] roleIds) {
-        userService.checkUserDataScope(userId);
-        userService.insertUserAuth(userId, roleIds);
+    public AjaxJson<Void> insertAuthRole(@RequestBody ChangeRoleRequest changeRoleRequest) {
+        userService.checkUserDataScope(changeRoleRequest.getRoleId());
+        userService.insertUserAuth(changeRoleRequest.getUserId(), changeRoleRequest.getRoleIds());
         return AjaxJson.getSuccess();
     }
 }

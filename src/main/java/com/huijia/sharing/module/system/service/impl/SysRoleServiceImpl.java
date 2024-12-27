@@ -25,6 +25,7 @@ import com.huijia.sharing.module.system.page.TableDataInfo;
 import com.huijia.sharing.module.system.service.ISysRoleService;
 import com.huijia.sharing.module.system.utils.LoginHelper;
 import com.huijia.sharing.module.system.utils.MapstructUtils;
+import com.huijia.sharing.module.system.utils.StreamUtils;
 import com.huijia.sharing.module.system.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -396,7 +397,21 @@ public class SysRoleServiceImpl implements ISysRoleService {
 
     @Override
     public int insertAuthUsers(Long roleId, Long[] userIds) {
-        return 0;
+        // 新增用户与角色管理
+        int rows = 1;
+        List<SysUserRole> list = StreamUtils.toList(Arrays.asList(userIds), userId -> {
+            SysUserRole ur = new SysUserRole();
+            ur.setUserId(userId);
+            ur.setRoleId(roleId);
+            return ur;
+        });
+        if (CollUtil.isNotEmpty(list)) {
+            rows = userRoleMapper.insertBatch(list) ? list.size() : 0;
+        }
+        if (rows > 0) {
+            cleanOnlineUserByRole(roleId);
+        }
+        return rows;
     }
 
 

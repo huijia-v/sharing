@@ -5,20 +5,17 @@ import com.huijia.sharing.core.util.AjaxJson;
 import com.huijia.sharing.module.system.annotation.Log;
 import com.huijia.sharing.module.system.enums.BusinessType;
 import com.huijia.sharing.module.system.model.*;
+import com.huijia.sharing.module.system.model.request.ChangeRoleRequest;
 import com.huijia.sharing.module.system.page.PageQuery;
 import com.huijia.sharing.module.system.page.TableDataInfo;
 import com.huijia.sharing.module.system.service.ISysRoleService;
 import com.huijia.sharing.module.system.service.ISysUserService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 角色信息
@@ -193,16 +190,14 @@ public class SysRoleController {
 
     /**
      * 批量选择用户授权
-     *
-     * @param roleId  角色ID
-     * @param userIds 用户ID串
+     * @param changeRoleRequest 角色ID和用户ID串param changeRoleRequest
      */
     @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.GRANT)
     @PutMapping("/authUser/selectAll")
-    public AjaxJson<?> selectAuthUserAll(Long roleId, Long[] userIds) {
-        roleService.checkRoleDataScope(roleId);
-        return AjaxJson.getSuccessData(roleService.insertAuthUsers(roleId, userIds));
+    public AjaxJson<?> selectAuthUserAll(@RequestBody ChangeRoleRequest changeRoleRequest) {
+        roleService.checkRoleDataScope(changeRoleRequest.getRoleId());
+        return AjaxJson.getSuccessData(roleService.insertAuthUsers(changeRoleRequest.getRoleId(), changeRoleRequest.getUserIds()));
     }
 
     /**

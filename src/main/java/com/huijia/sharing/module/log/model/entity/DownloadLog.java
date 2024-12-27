@@ -47,6 +47,10 @@ public class DownloadLog implements Serializable {
     @ApiModelProperty(value="文件路径")
     private String path;
 
+    @TableField(value = "`download_create`")
+    @ApiModelProperty(value="存储源创建时间")
+    private Date downloadCreate;
+
 
     @TableField(value = "`storage_key`")
     @ApiModelProperty(value="存储源 key")

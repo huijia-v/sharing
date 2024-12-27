@@ -59,6 +59,7 @@ public interface StorageSourceConvert {
 	List<StorageSourceAdminResult> entityToAdminResultList(List<StorageSource> list);
 
 
+	@Mapping(source = "storageSource.visable", target = "visable")
 	StorageSourceDTO entityToDTO(StorageSource storageSource, StorageSourceAllParamDTO storageSourceAllParam);
 	
 	

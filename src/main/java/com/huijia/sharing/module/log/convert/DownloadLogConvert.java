@@ -19,6 +19,7 @@ public interface DownloadLogConvert {
 	@Mapping(source = "downloadLog.id", target = "id")
 	@Mapping(source = "storageSource.name", target = "storageName")
 	@Mapping(source = "storageSource.type", target = "storageType")
+	@Mapping(source = "downloadLog.downloadCreate", target = "createTime")
 	DownloadLogResult entityToResultList(DownloadLog downloadLog, StorageSource storageSource);
 
 }

@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.huijia.sharing.module.domain.BaseEntity;
 import com.huijia.sharing.module.storage.model.enums.SearchModeEnum;
 import com.huijia.sharing.module.storage.model.enums.StorageTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
@@ -19,10 +21,11 @@ import java.io.Serializable;
  *
  * @author zhaojun
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(description = "存储源基本属性")
 @TableName(value = "storage_source")
-public class StorageSource implements Serializable {
+public class StorageSource extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -99,11 +102,15 @@ public class StorageSource implements Serializable {
     @TableField(value = "default_switch_to_img_mode")
     @ApiModelProperty(value = "是否默认开启图片模式", example = "true")
     private Boolean defaultSwitchToImgMode;
-    
-    
+
+
     @TableField(value = "compatibility_readme")
     @ApiModelProperty(value = "兼容 readme 模式", example = "true", notes = "兼容模式, 目录文档读取 readme.md 文件")
     private Boolean compatibilityReadme;
+
+    @TableField(value = "visable")
+    @ApiModelProperty(value = "公开性", example = "0", notes = "不公开")
+    private Integer visable;
 
     public boolean getAllowOperator() {
         // 允许文件操作，且允许匿名操作或者当前登录用户是管理员

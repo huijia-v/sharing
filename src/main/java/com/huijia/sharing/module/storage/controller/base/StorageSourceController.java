@@ -1,7 +1,9 @@
 package com.huijia.sharing.module.storage.controller.base;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
+import com.huijia.sharing.core.constant.SharingConstant;
 import com.huijia.sharing.core.util.AjaxJson;
 import com.huijia.sharing.module.storage.convert.StorageSourceConvert;
 import com.huijia.sharing.module.storage.model.bo.RefreshTokenCacheBO;
@@ -12,6 +14,9 @@ import com.huijia.sharing.module.storage.model.request.admin.UpdateStorageSortRe
 import com.huijia.sharing.module.storage.model.request.base.SaveStorageSourceRequest;
 import com.huijia.sharing.module.storage.model.result.StorageSourceAdminResult;
 import com.huijia.sharing.module.storage.service.StorageSourceService;
+import com.huijia.sharing.module.system.model.LoginUser;
+import com.huijia.sharing.module.system.utils.LoginHelper;
+import com.huijia.sharing.module.system.utils.StreamUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,11 +45,22 @@ public class StorageSourceController {
     private StorageSourceConvert storageSourceConvert;
 
 
+    @SaCheckPermission("source:info:list")
     @ApiOperationSupport(order = 1)
     @ApiOperation(value = "获取所有存储源列表", notes = "获取所有添加的存储源列表，按照排序值由小到大排序")
     @GetMapping("/storages")
     public AjaxJson<List<StorageSourceAdminResult>> storageList() {
         List<StorageSource> list = storageSourceService.findAllOrderByOrderNum();
+        if (!LoginHelper.isSuperAdmin()) {
+            LoginUser loginUser = LoginHelper.getLoginUser();
+            list = StreamUtils.filter(list, storageSource -> {
+                if (storageSource.getCreateBy().equals(loginUser.getUserId())) {
+                    return true;
+                }
+                return storageSource.getVisable().equals(SharingConstant.ISPUBLIC);
+            });
+
+        }
 
         List<StorageSourceAdminResult> storageSourceAdminResults = storageSourceConvert.entityToAdminResultList(list);
 
@@ -57,6 +73,7 @@ public class StorageSourceController {
     }
 
 
+    @SaCheckPermission("source:info:query")
     @ApiOperationSupport(order = 2)
     @ApiOperation(value = "获取指定存储源参数", notes = "获取指定存储源基本信息及其参数")
     @ApiImplicitParam(paramType = "path", name = "storageId", value = "存储源 id", required = true, dataTypeClass = Integer.class)
@@ -67,6 +84,7 @@ public class StorageSourceController {
     }
 
 
+    @SaCheckPermission("source:info:edit")
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "保存存储源参数", notes = "保存存储源的所有参数")
     @PostMapping("/storage")
@@ -76,6 +94,7 @@ public class StorageSourceController {
     }
 
 
+    @SaCheckPermission("source:info:remove")
     @ApiOperationSupport(order = 4)
     @ApiOperation(value = "删除存储源", notes = "删除存储源基本设置和拓展设置")
     @ApiImplicitParam(paramType = "path", name = "storageId", value = "存储源 id", required = true, dataTypeClass = Integer.class)
@@ -86,6 +105,7 @@ public class StorageSourceController {
     }
 
 
+    @SaCheckPermission("source:info:enable")
     @ApiOperationSupport(order = 5)
     @ApiOperation(value = "启用存储源", notes = "开启存储源后可在前台显示")
     @ApiImplicitParam(paramType = "path", name = "storageId", value = "存储源 id", required = true, dataTypeClass = Integer.class)
@@ -98,6 +118,7 @@ public class StorageSourceController {
     }
 
 
+    @SaCheckPermission("source:info:disable")
     @ApiOperationSupport(order = 6)
     @ApiOperation(value = "停止存储源", notes = "停用存储源后不在前台显示")
     @ApiImplicitParam(paramType = "path", name = "storageId", value = "存储源 id", required = true, dataTypeClass = Integer.class)
@@ -127,13 +148,13 @@ public class StorageSourceController {
         boolean exist = storageSourceService.existByStorageKey(storageKey);
         return AjaxJson.getSuccessData(exist);
     }
-    
-    
+
+
     @ApiOperationSupport(order = 9)
     @ApiOperation(value = "修改 readme 兼容模式", notes = "修改 readme 兼容模式是否启用")
     @ApiImplicitParams({
-        @ApiImplicitParam(paramType = "path", name = "storageId", value = "存储源 id", required = true, dataTypeClass = Integer.class),
-        @ApiImplicitParam(paramType = "path", name = "status", value = "存储源兼容模式状态", required = true, dataTypeClass = Boolean.class)
+            @ApiImplicitParam(paramType = "path", name = "storageId", value = "存储源 id", required = true, dataTypeClass = Integer.class),
+            @ApiImplicitParam(paramType = "path", name = "status", value = "存储源兼容模式状态", required = true, dataTypeClass = Boolean.class)
     })
     @PostMapping("/storage/{storageId}/compatibility_readme/{status}")
     public AjaxJson<Void> changeCompatibilityReadme(@PathVariable Integer storageId, @PathVariable Boolean status) {
@@ -144,6 +165,7 @@ public class StorageSourceController {
     }
 
 
+    @SaCheckPermission("source:info:copy")
     @ApiOperationSupport(order = 10)
     @ApiOperation(value = "复制存储源", notes = "复制存储源配置")
     @ApiImplicitParam(paramType = "path", name = "storageId", value = "存储源 id", required = true, dataTypeClass = Integer.class)

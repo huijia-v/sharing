@@ -66,4 +66,7 @@ public class StorageSourceDTO {
     @ApiModelProperty(value = "兼容 readme 模式", example = "true", notes = "兼容模式, 目录文档读取 readme.md 文件")
     private Boolean compatibilityReadme;
 
+    @ApiModelProperty(value = "存储源可见性", example = "0-私有")
+    private String visable;
+
 }
